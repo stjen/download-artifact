@@ -74,7 +74,11 @@ runs:
       shell: bash
       working-directory: ${{ inputs.path }}
       run: |
-        set -x
+        set +e
+
+        ANSI_LIGHT_RED="\e[91m"
+        ANSI_LIGHT_GREEN="\e[92m"
+        ANSI_NOCOLOR="\e[0m"
 
         if [[ "${{ inputs.name }}" == "" ]]; then
           dirs=(*/)
@@ -83,10 +87,16 @@ runs:
         fi
 
         for dir in "${dirs[@]}"; do
-          echo "> Extracting: $dir"
           pushd "$dir" > /dev/null
-          tar -xvf artifact.tar
-          rm artifact.tar
+        
+          echo -n "Extracting tarball '${dir}/${{ inputs.temp_tarball }}' ... "
+          tar -xf "${{ inputs.temp_tarball }}"
+          if [[ $? -ne 0 ]]; then
+            echo -e "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
+          else
+            echo -e "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
+          fi
+          
           popd > /dev/null
         done
 
