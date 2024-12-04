@@ -81,15 +81,15 @@ runs:
         ANSI_NOCOLOR="\e[0m"
 
         if [[ "${{ inputs.name }}" == "" ]]; then
-          dirs=(*/)
+          artifactDirectories=(*/)
         else
-          dirs=(.)
+          artifactDirectories=(.)
         fi
 
-        for dir in "${dirs[@]}"; do
-          pushd "$dir" > /dev/null
+        for artifactDirectory in "${artifactDirectories[@]}"; do
+          pushd "${artifactDirectory}" > /dev/null
         
-          echo -n "Extracting tarball '${dir}/${{ inputs.temp_tarball }}' ... "
+          echo -n "Extracting tarball '${artifactDirectory}/${{ inputs.temp_tarball }}' ... "
           tar -xf "${{ inputs.temp_tarball }}"
           if [[ $? -ne 0 ]]; then
             echo -e "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
