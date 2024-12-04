@@ -69,12 +69,17 @@ runs:
       with:
         name: ${{ inputs.name }}
         path: ${{ inputs.path }}
+        pattern: ${{ inputs.pattern }}
+        merge-multiple: ${{ inputs.merge-multiple }}
+        github-token: ${{ inputs.github-token }}
+        repository: ${{ inputs.repository }}
+        run-id: ${{ inputs.run-id }}
 
     - name: 🔎 Inspect after download
       id: inspect
       shell: bash
       run: |
-        tree .
+        tree -psh .
 
     - name: Extract tarball content(s)
       id: extract
