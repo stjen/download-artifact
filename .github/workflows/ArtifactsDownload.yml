@@ -18,13 +18,15 @@ jobs:
           
           mkdir -p bin
           echo "Program $(date --utc '+%d.%m.%Y - %H:%M:%S')"   > bin/program.py
+          chmod u+x bin/program.py
           
           mkdir -p lib
           echo "Library $(date --utc '+%d.%m.%Y - %H:%M:%S')"   > lib/common.py
+          chmod +x lib/common.py
 
       - name: 🔎 Inspect directory structure
         run: |
-          tree .
+          tree -psh .
 
       - name: 📤 Upload artifact
         uses: pyTooling/upload-artifact@dev
@@ -59,7 +61,7 @@ jobs:
 
       - name: 🔎 Inspect directory structure
         run: |
-          tree .
+          tree -psh .
 
       - name: 📤 Upload artifact
         uses: pyTooling/upload-artifact@dev
@@ -87,7 +89,7 @@ jobs:
 
       - name: 🔎 Inspect extracted artifact (tarball)
         run: |
-          tree .
+          tree -psh .
 
       - name: 🔎 Inspect cleanup
         run: |
@@ -141,6 +143,7 @@ jobs:
           echo ""
           if [[ $errors -ne 0 ]]; then
             echo -e "${ANSI_LIGHT_RED}Counted ${errors} errors.${ANSI_NOCOLOR}"
+            exit 1
           else
             echo -e "${ANSI_LIGHT_GREEN}No errors found.${ANSI_NOCOLOR}"
           fi
@@ -173,6 +176,7 @@ jobs:
           echo ""
           if [[ $errors -ne 0 ]]; then
             echo -e "${ANSI_LIGHT_RED}Counted ${errors} errors.${ANSI_NOCOLOR}"
+            exit 1
           else
             echo -e "${ANSI_LIGHT_GREEN}No errors found.${ANSI_NOCOLOR}"
           fi
@@ -192,7 +196,7 @@ jobs:
 
       - name: 🔎 Inspect extracted artifact (tarball)
         run: |
-          tree .
+          tree -psh .
 
       - name: 🔎 Inspect cleanup
         run: |
@@ -246,6 +250,7 @@ jobs:
           echo ""
           if [[ $errors -ne 0 ]]; then
             echo -e "${ANSI_LIGHT_RED}Counted ${errors} errors.${ANSI_NOCOLOR}"
+            exit 1
           else
             echo -e "${ANSI_LIGHT_GREEN}No errors found.${ANSI_NOCOLOR}"
           fi
@@ -278,6 +283,7 @@ jobs:
           echo ""
           if [[ $errors -ne 0 ]]; then
             echo -e "${ANSI_LIGHT_RED}Counted ${errors} errors.${ANSI_NOCOLOR}"
+            exit 1
           else
             echo -e "${ANSI_LIGHT_GREEN}No errors found.${ANSI_NOCOLOR}"
           fi
@@ -297,7 +303,7 @@ jobs:
 
       - name: 🔎 Inspect extracted artifact (tarball)
         run: |
-          tree .
+          tree -psh .
 
       - name: 🔎 Inspect cleanup
         run: |
@@ -364,6 +370,7 @@ jobs:
           echo ""
           if [[ $errors -ne 0 ]]; then
             echo -e "${ANSI_LIGHT_RED}Counted ${errors} errors.${ANSI_NOCOLOR}"
+            exit 1
           else
             echo -e "${ANSI_LIGHT_GREEN}No errors found.${ANSI_NOCOLOR}"
           fi
@@ -398,6 +405,7 @@ jobs:
           echo ""
           if [[ $errors -ne 0 ]]; then
             echo -e "${ANSI_LIGHT_RED}Counted ${errors} errors.${ANSI_NOCOLOR}"
+            exit 1
           else
             echo -e "${ANSI_LIGHT_GREEN}No errors found.${ANSI_NOCOLOR}"
           fi
