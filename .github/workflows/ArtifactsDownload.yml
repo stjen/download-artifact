@@ -188,7 +188,7 @@ jobs:
         uses: pyTooling/download-artifact@dev
         with:
           name: release-2
-          path: artifact
+          path: myDownload
 
       - name: 🔎 Inspect extracted artifact (tarball)
         run: |
@@ -207,9 +207,9 @@ jobs:
           echo "----------------------------------------"
           
           echo -n "Was tarball removed ... "
-          if [[ -f artifact/__upload_artifact__.tar ]]; then
+          if [[ -f myDownload/__upload_artifact__.tar ]]; then
             echo -e "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
-            echo -e "${ANSI_LIGHT_RED}Artifact's tarball 'artifact/__upload_artifact__.tar' still exists.${ANSI_NOCOLOR}"
+            echo -e "${ANSI_LIGHT_RED}Artifact's tarball 'myDownload/__upload_artifact__.tar' still exists.${ANSI_NOCOLOR}"
             exit 1
           else
             echo -e "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
@@ -224,11 +224,11 @@ jobs:
           ANSI_NOCOLOR="\e[0m"
 
           expected=(
-            "artifact/document1.txt"
-            "artifact/analysis.log"
-            "artifact/build.log"
-            "artifact/bin/program.py"
-            "artifact/lib/common.py"
+            "myDownload/document1.txt"
+            "myDownload/analysis.log"
+            "myDownload/build.log"
+            "myDownload/bin/program.py"
+            "myDownload/lib/common.py"
           )
 
           errors=0          
@@ -259,8 +259,8 @@ jobs:
           ANSI_NOCOLOR="\e[0m"
 
           expected=(
-            "artifact/bin/program.py"
-            "artifact/lib/common.py"
+            "myDownload/bin/program.py"
+            "myDownload/lib/common.py"
           )
 
           errors=0          
@@ -282,3 +282,122 @@ jobs:
             echo -e "${ANSI_LIGHT_GREEN}No errors found.${ANSI_NOCOLOR}"
           fi
 
+  Verify-3:
+    name: Verify 3 - Artifact contents
+    runs-on: ubuntu-24.04
+    needs:
+      - Build-1
+      - Build-2
+
+    steps:
+      - name: 📥 Download artifact
+        uses: pyTooling/download-artifact@dev
+        with:
+          path: myDownload
+
+      - name: 🔎 Inspect extracted artifact (tarball)
+        run: |
+          tree .
+
+      - name: 🔎 Inspect cleanup
+        run: |
+          set +e
+
+          ANSI_LIGHT_RED="\e[91m"
+          ANSI_LIGHT_GREEN="\e[92m"
+          ANSI_NOCOLOR="\e[0m"
+          
+          echo "List directory content"
+          ls -lAh .
+          echo "----------------------------------------"
+          
+          echo -n "Was tarball of 'release-1' removed ... "
+          if [[ -f myDownload/release-1/__upload_artifact__.tar ]]; then
+            echo -e "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
+            echo -e "${ANSI_LIGHT_RED}Artifact's tarball 'myDownload/release-1/__upload_artifact__.tar' still exists.${ANSI_NOCOLOR}"
+            exit 1
+          else
+            echo -e "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
+          fi
+          echo -n "Was tarball of 'release-2' removed ... "
+          if [[ -f myDownload/release-2/__upload_artifact__.tar ]]; then
+            echo -e "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
+            echo -e "${ANSI_LIGHT_RED}Artifact's tarball 'myDownload/release-2/__upload_artifact__.tar' still exists.${ANSI_NOCOLOR}"
+            exit 1
+          else
+            echo -e "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
+          fi
+
+      - name: 📋 Verify extracted artifact content
+        run: |
+          set +e
+
+          ANSI_LIGHT_RED="\e[91m"
+          ANSI_LIGHT_GREEN="\e[92m"
+          ANSI_NOCOLOR="\e[0m"
+
+          expected=(
+            "myDownload/release-1/document1.txt"
+            "myDownload/release-1/analysis.log"
+            "myDownload/release-1/build.log"
+            "myDownload/release-1/bin/program.py"
+            "myDownload/release-1/lib/common.py"
+            "myDownload/release-2/document1.txt"
+            "myDownload/release-2/analysis.log"
+            "myDownload/release-2/build.log"
+            "myDownload/release-2/bin/program.py"
+            "myDownload/release-2/lib/common.py"
+          )
+
+          errors=0          
+          for file in "${expected[@]}"; do
+            echo -n "Checking '${file}' ... "
+            if [[ -f "$file" ]]; then
+              echo -e "${ANSI_LIGHT_GREEN}[PASSED]${ANSI_NOCOLOR}"
+            else
+              echo -e "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
+              echo -e "${ANSI_LIGHT_RED}Extracted artifact doesn't contain file '${file}'.${ANSI_NOCOLOR}"
+              errors=$((errors + 1))
+            fi  
+          done
+          
+          echo ""
+          if [[ $errors -ne 0 ]]; then
+            echo -e "${ANSI_LIGHT_RED}Counted ${errors} errors.${ANSI_NOCOLOR}"
+          else
+            echo -e "${ANSI_LIGHT_GREEN}No errors found.${ANSI_NOCOLOR}"
+          fi
+
+      - name: 📋 Verify file permissions
+        run: |
+          set +e
+
+          ANSI_LIGHT_RED="\e[91m"
+          ANSI_LIGHT_GREEN="\e[92m"
+          ANSI_NOCOLOR="\e[0m"
+
+          expected=(
+            "myDownload/release-1/bin/program.py"
+            "myDownload/release-1/lib/common.py"
+            "myDownload/release-2/bin/program.py"
+            "myDownload/release-2/lib/common.py"
+          )
+
+          errors=0          
+          for file in "${expected[@]}"; do
+            echo -n "Checking '${file}' ... "
+            if [[ -x "$file" ]]; then
+              echo -e "${ANSI_LIGHT_GREEN}[PASSED]${ANSI_NOCOLOR}"
+            else
+              echo -e "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
+              echo -e "${ANSI_LIGHT_RED}File '${file}' isn't executable.${ANSI_NOCOLOR}"
+              errors=$((errors + 1))
+            fi  
+          done
+          
+          echo ""
+          if [[ $errors -ne 0 ]]; then
+            echo -e "${ANSI_LIGHT_RED}Counted ${errors} errors.${ANSI_NOCOLOR}"
+          else
+            echo -e "${ANSI_LIGHT_GREEN}No errors found.${ANSI_NOCOLOR}"
+          fi
