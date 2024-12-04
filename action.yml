@@ -64,13 +64,20 @@ runs:
   steps:
     # https://github.com/actions/download-artifact
     - name: Download artifact
-      uses: actions/download-artifact@v4
       id: download
+      uses: actions/download-artifact@v4
       with:
         name: ${{ inputs.name }}
         path: ${{ inputs.path }}
 
+    - name: 🔎 Inspect after download
+      id: inspect
+      shell: bash
+      run: |
+        tree .
+
     - name: Extract tarball content(s)
+      id: extract
       shell: bash
       working-directory: ${{ inputs.path }}
       run: |
@@ -103,6 +110,7 @@ runs:
     - name: Remove temporary tarball
       id: cleanup
       shell: bash
+      working-directory: ${{ inputs.path }}
       run: |
         set +e
 
@@ -110,10 +118,18 @@ runs:
         ANSI_LIGHT_GREEN="\e[92m"
         ANSI_NOCOLOR="\e[0m"
         
-        echo -n "Removing temporary tarball(s) ... "
-        rm -f "${{ inputs.temp_tarball }}"
-        if [[ $? -ne 0 ]]; then
-          echo -e "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
+        if [[ "${{ inputs.name }}" == "" ]]; then
+          artifactDirectories=(*/)
         else
-          echo -e "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
+          artifactDirectories=(.)
         fi
+        
+        for artifactDirectory in "${artifactDirectories[@]}"; do
+          echo -n "Removing temporary tarball ... "
+          rm -f "${artifactDirectory}/${{ inputs.temp_tarball }}"
+          if [[ $? -ne 0 ]]; then
+            echo -e "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
+          else
+            echo -e "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
+          fi
+        done
