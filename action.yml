@@ -1,4 +1,7 @@
 name: Download (preserving) Artifact(s)
+branding:
+  icon: download
+  color: yellow
 description: Download the artifact(s) with preserved file privileges which were previously uploaded by the 'upload-artifact' action.
 author: Patrick Lehmann (@Paebbels)
 
