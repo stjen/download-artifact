@@ -31,6 +31,16 @@ jobs:
           tree -psh .
 
       - name: 📤 Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: legacy
+          path: |
+            document1.txt
+            *.log
+            bin/
+            lib/*.py
+
+      - name: 📤 Upload artifact
         uses: pyTooling/upload-artifact@dev
         with:
           name: release-1
@@ -413,3 +423,19 @@ jobs:
           else
             echo -e "${ANSI_LIGHT_GREEN}No errors found.${ANSI_NOCOLOR}"
           fi
+
+  Verify-legacy:
+    name: Verify legacy upload
+    runs-on: ubuntu-24.04
+    needs:
+      - Build-1
+
+    steps:
+      - name: 📥 Download artifact
+        uses: pyTooling/download-artifact@dev
+        with:
+          name: legacy
+
+      - name: 🔎 Inspect artifact content
+        run: |
+          tree .
