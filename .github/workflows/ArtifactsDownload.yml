@@ -313,6 +313,7 @@ jobs:
       - name: 📥 Download artifact
         uses: pyTooling/download-artifact@dev
         with:
+          pattern: release-*
           path: myDownload
 
       - name: 🔎 Inspect extracted artifact (tarball)
