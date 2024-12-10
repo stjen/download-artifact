@@ -73,6 +73,12 @@ jobs:
 
 * [actions/download-artifact@v4](https://github.com/actions/download-artifact)
 
+## Competing Actions
+
+* [eviden-actions/download-artifact](https://github.com/eviden-actions/download-artifact)
+* [nmerget/download-gzip-artifact](https://github.com/nmerget/download-gzip-artifact)
+* [alehechka/download-tartifact](https://github.com/alehechka/download-tartifact)
+
 ## Contributors
 
 * [Patrick Lehmann](https://GitHub.com/Paebbels) (Maintainer)
