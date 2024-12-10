@@ -11,16 +11,52 @@ See [pyTooling/upload-artifact](https://github.com/pyTooling/upload-artifact) fo
 
 ## Usage
 
-tbd
+```yaml
+jobs:
+  MyJob:
+    steps:
+      - name: 📥 Download artifact
+        uses: pyTooling/download-artifact@v4
+        with:
+          name: binary
+
+      - name: 📥 Download artifact
+        uses: pyTooling/download-artifact@dev
+        with:
+          name: documentation
+          path: public
+
+      - name: 📥 Download artifact
+        uses: pyTooling/download-artifact@dev
+        with:
+          pattern: unittest-*
+          path: reports
+```
 
 
 ### Input Parameters
 
-tbd
+| Parameter        | Required | Default                    | Description                                                                                                                                                                                                                                                                                                 |
+|------------------|:--------:|----------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `name`           |    no    | `''`                       | Name of the artifact to download.<br>If unspecified, all artifacts for the run are downloaded.                                                                                                                                                                                                              |
+| `path`           |    no    | `$GITHUB_WORKSPACE`        | Destination path. Supports basic tilde expansion.                                                                                                                                                                                                                                                           |
+| `pattern`        |    no    |                            | A glob pattern to the artifacts that should be downloaded.<br>Ignored if `name` is specified.                                                                                                                                                                                                               |
+| `merge-multiple` |    no    | `false`                    | When multiple artifacts are matched, this changes the behavior of the destination directories.<br> If true, the downloaded artifacts will be in the same directory specified by path.<br> If false, the downloaded artifacts will be extracted into individual named directories within the specified path. |
+| `github-token`   |    no    |                            | The GitHub token used to authenticate with the GitHub API.<br> This is required when downloading artifacts from a different repository or from a different workflow run.<br> If unspecified, the action will download artifacts from the current repo and the current workflow run.                         |
+| `repository`     |    no    | `${{ github.repository }}` | The repository owner and the repository name joined together by "/".<br> If github-token is specified, this is the repository that artifacts will be downloaded from.                                                                                                                                       |
+| `run-id`         |    no    | `${{ github.run_id }}`     | The id of the workflow run where the desired download artifact was uploaded from.<br> If github-token is specified, this is the run that artifacts will be downloaded from.                                                                                                                                 |
+| `tarball-name`   |    no    | [^1]                       |                                                                                                                                                                                                                                                                                                             |
+
+[^1]: `'__pyTooling_upload_artifact__.tar'`
+
 
 ### Output Parameters
 
-tbd
+| Parameter       | Description                                          |
+|-----------------|------------------------------------------------------|
+| `download-path` | Absolute path where the artifact(s) were downloaded. |
+
+
 ## Fixed behavior compared to `actions/download-artifact`
 
 1. **Do preserve file permissions**  
