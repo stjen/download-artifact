@@ -28,18 +28,18 @@ jobs:
     steps:
       - name: 🖉 Build 1
         run: |
-          echo "Document 1 $(date --utc '+%d.%m.%Y - %H:%M:%S')"   > document1.txt
-          echo "Analysis log $(date --utc '+%d.%m.%Y - %H:%M:%S')" > analysis.log
-          echo "Build log $(date --utc '+%d.%m.%Y - %H:%M:%S')"    > build.log
+          printf "%s\n" "Document 1 $(date --utc '+%d.%m.%Y - %H:%M:%S')"   > document1.txt
+          printf "%s\n" "Analysis log $(date --utc '+%d.%m.%Y - %H:%M:%S')" > analysis.log
+          printf "%s\n" "Build log $(date --utc '+%d.%m.%Y - %H:%M:%S')"    > build.log
 
           mkdir -p bin
-          echo "Program $(date --utc '+%d.%m.%Y - %H:%M:%S')"   > bin/program.py
+          printf "%s\n" "Program $(date --utc '+%d.%m.%Y - %H:%M:%S')"   > bin/program.py
           chmod u+x bin/program.py
-          echo "Tool $(date --utc '+%d.%m.%Y - %H:%M:%S')"      > bin/tool.py
+          printf "%s\n" "Tool $(date --utc '+%d.%m.%Y - %H:%M:%S')"      > bin/tool.py
           chmod g+x bin/tool.py
 
           mkdir -p lib
-          echo "Library $(date --utc '+%d.%m.%Y - %H:%M:%S')"   > lib/common.py
+          printf "%s\n" "Library $(date --utc '+%d.%m.%Y - %H:%M:%S')"   > lib/common.py
           chmod +x lib/common.py
 
       - name: 🔎 Inspect directory structure
@@ -75,18 +75,18 @@ jobs:
     steps:
       - name: 🖉 Build 2
         run: |
-          echo "Document 1 $(date --utc '+%d.%m.%Y - %H:%M:%S')"   > document1.txt
-          echo "Analysis log $(date --utc '+%d.%m.%Y - %H:%M:%S')" > analysis.log
-          echo "Build log $(date --utc '+%d.%m.%Y - %H:%M:%S')"    > build.log
+          printf "%s\n" "Document 1 $(date --utc '+%d.%m.%Y - %H:%M:%S')"   > document1.txt
+          printf "%s\n" "Analysis log $(date --utc '+%d.%m.%Y - %H:%M:%S')" > analysis.log
+          printf "%s\n" "Build log $(date --utc '+%d.%m.%Y - %H:%M:%S')"    > build.log
 
           mkdir -p bin
-          echo "Program $(date --utc '+%d.%m.%Y - %H:%M:%S')"   > bin/program.py
+          printf "%s\n" "Program $(date --utc '+%d.%m.%Y - %H:%M:%S')"   > bin/program.py
           chmod u+x bin/program.py
-          echo "Tool $(date --utc '+%d.%m.%Y - %H:%M:%S')"      > bin/tool.py
+          printf "%s\n" "Tool $(date --utc '+%d.%m.%Y - %H:%M:%S')"      > bin/tool.py
           chmod g+x bin/tool.py
 
           mkdir -p lib
-          echo "Library $(date --utc '+%d.%m.%Y - %H:%M:%S')"   > lib/common.py
+          printf "%s\n" "Library $(date --utc '+%d.%m.%Y - %H:%M:%S')"   > lib/common.py
           chmod +x lib/common.py
 
       - name: 🔎 Inspect directory structure
@@ -125,30 +125,30 @@ jobs:
         run: |
           set +e
 
-          ANSI_LIGHT_RED="\e[91m"
-          ANSI_LIGHT_GREEN="\e[92m"
-          ANSI_NOCOLOR="\e[0m"
+          ANSI_LIGHT_RED=$'\x1b[91m'
+          ANSI_LIGHT_GREEN=$'\x1b[92m'
+          ANSI_NOCOLOR=$'\x1b[0m'
 
-          echo "List directory content"
+          printf "%s\n" "List directory content"
           ls -lAh .
-          echo "----------------------------------------"
+          printf "%s\n" "----------------------------------------"
 
-          echo -n "Was tarball removed ... "
+          printf "%s" "Was tarball removed ... "
           if [[ -f __pyTooling_upload_artifact__.tar ]]; then
-            echo -e "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
-            echo -e "${ANSI_LIGHT_RED}Artifact's tarball '__pyTooling_upload_artifact__.tar' still exists.${ANSI_NOCOLOR}"
+            printf "%s\n" "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
+            printf "%s\n" "${ANSI_LIGHT_RED}Artifact's tarball '__pyTooling_upload_artifact__.tar' still exists.${ANSI_NOCOLOR}"
             exit 1
           else
-            echo -e "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
+            printf "%s\n" "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
           fi
 
       - name: 📋 Verify extracted artifact content
         run: |
           set +e
 
-          ANSI_LIGHT_RED="\e[91m"
-          ANSI_LIGHT_GREEN="\e[92m"
-          ANSI_NOCOLOR="\e[0m"
+          ANSI_LIGHT_RED=$'\x1b[91m'
+          ANSI_LIGHT_GREEN=$'\x1b[92m'
+          ANSI_NOCOLOR=$'\x1b[0m'
 
           expected=(
             "document1.txt"
@@ -160,31 +160,31 @@ jobs:
 
           errors=0
           for file in "${expected[@]}"; do
-            echo -n "Checking '${file}' ... "
+            printf "%s" "Checking '${file}' ... "
             if [[ -f "$file" ]]; then
-              echo -e "${ANSI_LIGHT_GREEN}[PASSED]${ANSI_NOCOLOR}"
+              printf "%s\n" "${ANSI_LIGHT_GREEN}[PASSED]${ANSI_NOCOLOR}"
             else
-              echo -e "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
-              echo -e "${ANSI_LIGHT_RED}Extracted artifact doesn't contain file '${file}'.${ANSI_NOCOLOR}"
+              printf "%s\n" "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
+              printf "%s\n" "${ANSI_LIGHT_RED}Extracted artifact doesn't contain file '${file}'.${ANSI_NOCOLOR}"
               errors=$((errors + 1))
             fi
           done
 
-          echo ""
+          printf "%s\n" ""
           if [[ $errors -ne 0 ]]; then
-            echo -e "${ANSI_LIGHT_RED}Counted ${errors} errors.${ANSI_NOCOLOR}"
+            printf "%s\n" "${ANSI_LIGHT_RED}Counted ${errors} errors.${ANSI_NOCOLOR}"
             exit 1
           else
-            echo -e "${ANSI_LIGHT_GREEN}No errors found.${ANSI_NOCOLOR}"
+            printf "%s\n" "${ANSI_LIGHT_GREEN}No errors found.${ANSI_NOCOLOR}"
           fi
 
       - name: 📋 Verify file permissions
         run: |
           set +e
 
-          ANSI_LIGHT_RED="\e[91m"
-          ANSI_LIGHT_GREEN="\e[92m"
-          ANSI_NOCOLOR="\e[0m"
+          ANSI_LIGHT_RED=$'\x1b[91m'
+          ANSI_LIGHT_GREEN=$'\x1b[92m'
+          ANSI_NOCOLOR=$'\x1b[0m'
 
           expected=(
             "bin/program.py"
@@ -193,22 +193,22 @@ jobs:
 
           errors=0
           for file in "${expected[@]}"; do
-            echo -n "Checking '${file}' ... "
+            printf "%s" "Checking '${file}' ... "
             if [[ -x "$file" ]]; then
-              echo -e "${ANSI_LIGHT_GREEN}[PASSED]${ANSI_NOCOLOR}"
+              printf "%s\n" "${ANSI_LIGHT_GREEN}[PASSED]${ANSI_NOCOLOR}"
             else
-              echo -e "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
-              echo -e "${ANSI_LIGHT_RED}File '${file}' isn't executable.${ANSI_NOCOLOR}"
+              printf "%s\n" "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
+              printf "%s\n" "${ANSI_LIGHT_RED}File '${file}' isn't executable.${ANSI_NOCOLOR}"
               errors=$((errors + 1))
             fi
           done
 
-          echo ""
+          printf "%s\n" ""
           if [[ $errors -ne 0 ]]; then
-            echo -e "${ANSI_LIGHT_RED}Counted ${errors} errors.${ANSI_NOCOLOR}"
+            printf "%s\n" "${ANSI_LIGHT_RED}Counted ${errors} errors.${ANSI_NOCOLOR}"
             exit 1
           else
-            echo -e "${ANSI_LIGHT_GREEN}No errors found.${ANSI_NOCOLOR}"
+            printf "%s\n" "${ANSI_LIGHT_GREEN}No errors found.${ANSI_NOCOLOR}"
           fi
 
   Verify-2:
@@ -232,30 +232,30 @@ jobs:
         run: |
           set +e
 
-          ANSI_LIGHT_RED="\e[91m"
-          ANSI_LIGHT_GREEN="\e[92m"
-          ANSI_NOCOLOR="\e[0m"
+          ANSI_LIGHT_RED=$'\x1b[91m'
+          ANSI_LIGHT_GREEN=$'\x1b[92m'
+          ANSI_NOCOLOR=$'\x1b[0m'
 
-          echo "List directory content"
+          printf "%s\n" "List directory content"
           ls -lAh .
-          echo "----------------------------------------"
+          printf "%s\n" "----------------------------------------"
 
-          echo -n "Was tarball removed ... "
+          printf "%s" "Was tarball removed ... "
           if [[ -f myDownload/__pyTooling_upload_artifact__.tar ]]; then
-            echo -e "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
-            echo -e "${ANSI_LIGHT_RED}Artifact's tarball 'myDownload/__pyTooling_upload_artifact__.tar' still exists.${ANSI_NOCOLOR}"
+            printf "%s\n" "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
+            printf "%s\n" "${ANSI_LIGHT_RED}Artifact's tarball 'myDownload/__pyTooling_upload_artifact__.tar' still exists.${ANSI_NOCOLOR}"
             exit 1
           else
-            echo -e "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
+            printf "%s\n" "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
           fi
 
       - name: 📋 Verify extracted artifact content
         run: |
           set +e
 
-          ANSI_LIGHT_RED="\e[91m"
-          ANSI_LIGHT_GREEN="\e[92m"
-          ANSI_NOCOLOR="\e[0m"
+          ANSI_LIGHT_RED=$'\x1b[91m'
+          ANSI_LIGHT_GREEN=$'\x1b[92m'
+          ANSI_NOCOLOR=$'\x1b[0m'
 
           expected=(
             "myDownload/document1.txt"
@@ -267,31 +267,31 @@ jobs:
 
           errors=0
           for file in "${expected[@]}"; do
-            echo -n "Checking '${file}' ... "
+            printf "%s" "Checking '${file}' ... "
             if [[ -f "$file" ]]; then
-              echo -e "${ANSI_LIGHT_GREEN}[PASSED]${ANSI_NOCOLOR}"
+              printf "%s\n" "${ANSI_LIGHT_GREEN}[PASSED]${ANSI_NOCOLOR}"
             else
-              echo -e "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
-              echo -e "${ANSI_LIGHT_RED}Extracted artifact doesn't contain file '${file}'.${ANSI_NOCOLOR}"
+              printf "%s\n" "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
+              printf "%s\n" "${ANSI_LIGHT_RED}Extracted artifact doesn't contain file '${file}'.${ANSI_NOCOLOR}"
               errors=$((errors + 1))
             fi
           done
 
-          echo ""
+          printf "%s\n" ""
           if [[ $errors -ne 0 ]]; then
-            echo -e "${ANSI_LIGHT_RED}Counted ${errors} errors.${ANSI_NOCOLOR}"
+            printf "%s\n" "${ANSI_LIGHT_RED}Counted ${errors} errors.${ANSI_NOCOLOR}"
             exit 1
           else
-            echo -e "${ANSI_LIGHT_GREEN}No errors found.${ANSI_NOCOLOR}"
+            printf "%s\n" "${ANSI_LIGHT_GREEN}No errors found.${ANSI_NOCOLOR}"
           fi
 
       - name: 📋 Verify file permissions
         run: |
           set +e
 
-          ANSI_LIGHT_RED="\e[91m"
-          ANSI_LIGHT_GREEN="\e[92m"
-          ANSI_NOCOLOR="\e[0m"
+          ANSI_LIGHT_RED=$'\x1b[91m'
+          ANSI_LIGHT_GREEN=$'\x1b[92m'
+          ANSI_NOCOLOR=$'\x1b[0m'
 
           expected=(
             "myDownload/bin/program.py"
@@ -300,22 +300,22 @@ jobs:
 
           errors=0
           for file in "${expected[@]}"; do
-            echo -n "Checking '${file}' ... "
+            printf "%s" "Checking '${file}' ... "
             if [[ -x "$file" ]]; then
-              echo -e "${ANSI_LIGHT_GREEN}[PASSED]${ANSI_NOCOLOR}"
+              printf "%s\n" "${ANSI_LIGHT_GREEN}[PASSED]${ANSI_NOCOLOR}"
             else
-              echo -e "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
-              echo -e "${ANSI_LIGHT_RED}File '${file}' isn't executable.${ANSI_NOCOLOR}"
+              printf "%s\n" "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
+              printf "%s\n" "${ANSI_LIGHT_RED}File '${file}' isn't executable.${ANSI_NOCOLOR}"
               errors=$((errors + 1))
             fi
           done
 
-          echo ""
+          printf "%s\n" ""
           if [[ $errors -ne 0 ]]; then
-            echo -e "${ANSI_LIGHT_RED}Counted ${errors} errors.${ANSI_NOCOLOR}"
+            printf "%s\n" "${ANSI_LIGHT_RED}Counted ${errors} errors.${ANSI_NOCOLOR}"
             exit 1
           else
-            echo -e "${ANSI_LIGHT_GREEN}No errors found.${ANSI_NOCOLOR}"
+            printf "%s\n" "${ANSI_LIGHT_GREEN}No errors found.${ANSI_NOCOLOR}"
           fi
 
   Verify-3:
@@ -340,38 +340,38 @@ jobs:
         run: |
           set +e
 
-          ANSI_LIGHT_RED="\e[91m"
-          ANSI_LIGHT_GREEN="\e[92m"
-          ANSI_NOCOLOR="\e[0m"
+          ANSI_LIGHT_RED=$'\x1b[91m'
+          ANSI_LIGHT_GREEN=$'\x1b[92m'
+          ANSI_NOCOLOR=$'\x1b[0m'
 
-          echo "List directory content"
+          printf "%s\n" "List directory content"
           ls -lAh .
-          echo "----------------------------------------"
+          printf "%s\n" "----------------------------------------"
 
-          echo -n "Was tarball of 'release-1' removed ... "
+          printf "%s" "Was tarball of 'release-1' removed ... "
           if [[ -f myDownload/release-1/__pyTooling_upload_artifact__.tar ]]; then
-            echo -e "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
-            echo -e "${ANSI_LIGHT_RED}Artifact's tarball 'myDownload/release-1/__pyTooling_upload_artifact__.tar' still exists.${ANSI_NOCOLOR}"
+            printf "%s\n" "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
+            printf "%s\n" "${ANSI_LIGHT_RED}Artifact's tarball 'myDownload/release-1/__pyTooling_upload_artifact__.tar' still exists.${ANSI_NOCOLOR}"
             exit 1
           else
-            echo -e "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
+            printf "%s\n" "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
           fi
-          echo -n "Was tarball of 'release-2' removed ... "
+          printf "%s" "Was tarball of 'release-2' removed ... "
           if [[ -f myDownload/release-2/__pyTooling_upload_artifact__.tar ]]; then
-            echo -e "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
-            echo -e "${ANSI_LIGHT_RED}Artifact's tarball 'myDownload/release-2/__pyTooling_upload_artifact__.tar' still exists.${ANSI_NOCOLOR}"
+            printf "%s\n" "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
+            printf "%s\n" "${ANSI_LIGHT_RED}Artifact's tarball 'myDownload/release-2/__pyTooling_upload_artifact__.tar' still exists.${ANSI_NOCOLOR}"
             exit 1
           else
-            echo -e "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
+            printf "%s\n" "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
           fi
 
       - name: 📋 Verify extracted artifact content
         run: |
           set +e
 
-          ANSI_LIGHT_RED="\e[91m"
-          ANSI_LIGHT_GREEN="\e[92m"
-          ANSI_NOCOLOR="\e[0m"
+          ANSI_LIGHT_RED=$'\x1b[91m'
+          ANSI_LIGHT_GREEN=$'\x1b[92m'
+          ANSI_NOCOLOR=$'\x1b[0m'
 
           expected=(
             "myDownload/release-1/document1.txt"
@@ -388,31 +388,31 @@ jobs:
 
           errors=0
           for file in "${expected[@]}"; do
-            echo -n "Checking '${file}' ... "
+            printf "%s" "Checking '${file}' ... "
             if [[ -f "$file" ]]; then
-              echo -e "${ANSI_LIGHT_GREEN}[PASSED]${ANSI_NOCOLOR}"
+              printf "%s\n" "${ANSI_LIGHT_GREEN}[PASSED]${ANSI_NOCOLOR}"
             else
-              echo -e "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
-              echo -e "${ANSI_LIGHT_RED}Extracted artifact doesn't contain file '${file}'.${ANSI_NOCOLOR}"
+              printf "%s\n" "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
+              printf "%s\n" "${ANSI_LIGHT_RED}Extracted artifact doesn't contain file '${file}'.${ANSI_NOCOLOR}"
               errors=$((errors + 1))
             fi
           done
 
-          echo ""
+          printf "%s\n" ""
           if [[ $errors -ne 0 ]]; then
-            echo -e "${ANSI_LIGHT_RED}Counted ${errors} errors.${ANSI_NOCOLOR}"
+            printf "%s\n" "${ANSI_LIGHT_RED}Counted ${errors} errors.${ANSI_NOCOLOR}"
             exit 1
           else
-            echo -e "${ANSI_LIGHT_GREEN}No errors found.${ANSI_NOCOLOR}"
+            printf "%s\n" "${ANSI_LIGHT_GREEN}No errors found.${ANSI_NOCOLOR}"
           fi
 
       - name: 📋 Verify file permissions
         run: |
           set +e
 
-          ANSI_LIGHT_RED="\e[91m"
-          ANSI_LIGHT_GREEN="\e[92m"
-          ANSI_NOCOLOR="\e[0m"
+          ANSI_LIGHT_RED=$'\x1b[91m'
+          ANSI_LIGHT_GREEN=$'\x1b[92m'
+          ANSI_NOCOLOR=$'\x1b[0m'
 
           expected=(
             "myDownload/release-1/bin/program.py"
@@ -423,22 +423,22 @@ jobs:
 
           errors=0
           for file in "${expected[@]}"; do
-            echo -n "Checking '${file}' ... "
+            printf "%s" "Checking '${file}' ... "
             if [[ -x "$file" ]]; then
-              echo -e "${ANSI_LIGHT_GREEN}[PASSED]${ANSI_NOCOLOR}"
+              printf "%s\n" "${ANSI_LIGHT_GREEN}[PASSED]${ANSI_NOCOLOR}"
             else
-              echo -e "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
-              echo -e "${ANSI_LIGHT_RED}File '${file}' isn't executable.${ANSI_NOCOLOR}"
+              printf "%s\n" "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
+              printf "%s\n" "${ANSI_LIGHT_RED}File '${file}' isn't executable.${ANSI_NOCOLOR}"
               errors=$((errors + 1))
             fi
           done
 
-          echo ""
+          printf "%s\n" ""
           if [[ $errors -ne 0 ]]; then
-            echo -e "${ANSI_LIGHT_RED}Counted ${errors} errors.${ANSI_NOCOLOR}"
+            printf "%s\n" "${ANSI_LIGHT_RED}Counted ${errors} errors.${ANSI_NOCOLOR}"
             exit 1
           else
-            echo -e "${ANSI_LIGHT_GREEN}No errors found.${ANSI_NOCOLOR}"
+            printf "%s\n" "${ANSI_LIGHT_GREEN}No errors found.${ANSI_NOCOLOR}"
           fi
 
   Verify-legacy:
