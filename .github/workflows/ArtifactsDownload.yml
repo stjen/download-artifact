@@ -22,29 +22,21 @@ on:
 
 jobs:
   Build-1:
-    name: Build 1 - Upload artifact
-    runs-on: ubuntu-24.04
+    name: ${{ matrix.os.icon }} Build 1 on ${{ matrix.os.name }} - Upload artifact
+    runs-on: ${{ matrix.os.image }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - {'icon': '🐧', 'name': 'Ubuntu',  'image': 'ubuntu-24.04'}
+          - {'icon': '🍏', 'name': 'macOS',   'image': 'macos-14'    }
+          - {'icon': '🪟', 'name': 'Windows', 'image': 'windows-2022'}
 
     steps:
-      - name: 🖉 Build 1
-        run: |
-          printf "%s\n" "Document 1 $(date --utc '+%d.%m.%Y - %H:%M:%S')"   > document1.txt
-          printf "%s\n" "Analysis log $(date --utc '+%d.%m.%Y - %H:%M:%S')" > analysis.log
-          printf "%s\n" "Build log $(date --utc '+%d.%m.%Y - %H:%M:%S')"    > build.log
+      - name: ⏬ Checkout repository to use local actions
+        uses: actions/checkout@v4
 
-          mkdir -p bin
-          printf "%s\n" "Program $(date --utc '+%d.%m.%Y - %H:%M:%S')"   > bin/program.py
-          chmod u+x bin/program.py
-          printf "%s\n" "Tool $(date --utc '+%d.%m.%Y - %H:%M:%S')"      > bin/tool.py
-          chmod g+x bin/tool.py
-
-          mkdir -p lib
-          printf "%s\n" "Library $(date --utc '+%d.%m.%Y - %H:%M:%S')"   > lib/common.py
-          chmod +x lib/common.py
-
-      - name: 🔎 Inspect directory structure
-        run: |
-          tree -psh .
+      - uses: ./.github/actions/create-files
 
       - name: 📤 Upload artifact
         uses: actions/upload-artifact@v4
@@ -69,29 +61,21 @@ jobs:
 #          retention-days: 1
 
   Build-2:
-    name: Build 2 - Upload artifact
-    runs-on: ubuntu-24.04
+    name: ${{ matrix.os.icon }} Build 2 on ${{ matrix.os.name }} - Upload artifact
+    runs-on: ${{ matrix.os.image }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - {'icon': '🐧', 'name': 'Ubuntu',  'image': 'ubuntu-24.04'}
+          - {'icon': '🍏', 'name': 'macOS',   'image': 'macos-14'    }
+          - {'icon': '🪟', 'name': 'Windows', 'image': 'windows-2022'}
 
     steps:
-      - name: 🖉 Build 2
-        run: |
-          printf "%s\n" "Document 1 $(date --utc '+%d.%m.%Y - %H:%M:%S')"   > document1.txt
-          printf "%s\n" "Analysis log $(date --utc '+%d.%m.%Y - %H:%M:%S')" > analysis.log
-          printf "%s\n" "Build log $(date --utc '+%d.%m.%Y - %H:%M:%S')"    > build.log
+      - name: ⏬ Checkout repository to use local actions
+        uses: actions/checkout@v4
 
-          mkdir -p bin
-          printf "%s\n" "Program $(date --utc '+%d.%m.%Y - %H:%M:%S')"   > bin/program.py
-          chmod u+x bin/program.py
-          printf "%s\n" "Tool $(date --utc '+%d.%m.%Y - %H:%M:%S')"      > bin/tool.py
-          chmod g+x bin/tool.py
-
-          mkdir -p lib
-          printf "%s\n" "Library $(date --utc '+%d.%m.%Y - %H:%M:%S')"   > lib/common.py
-          chmod +x lib/common.py
-
-      - name: 🔎 Inspect directory structure
-        run: |
-          tree -psh .
+      - uses: ./.github/actions/create-files
 
       - name: 📤 Upload artifact
         uses: pyTooling/upload-artifact@dev
