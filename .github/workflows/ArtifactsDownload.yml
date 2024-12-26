@@ -234,11 +234,6 @@ jobs:
           path: myDownload
           investigate: true
 
-      - name: 🔎 Inspect extracted artifact (tarball)
-        if: matrix.os.name != 'macOS'
-        run: |
-          tree -pash .
-
       - name: 🔎 Inspect cleanup of '${{ matrix.uploader.name }}-release-1'
         uses: ./.github/actions/check-cleanup
         with:

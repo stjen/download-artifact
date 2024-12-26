@@ -168,25 +168,30 @@ runs:
         ANSI_LIGHT_BLUE="\e[94m"
         ANSI_NOCOLOR=$'\x1b[0m'
 
+        path="${{ inputs.path || '.' }}"
+
         if [[ "${{ inputs.name }}" == "" ]]; then
-          artifactDirectories=(*/)
+          for artifactDirectory in $(echo ${path}/*/); do
+            (
+              cd "${artifactDirectory}"
+              printf "::group::${ANSI_LIGHT_BLUE}Artifact content of '${artifactDirectory}'${ANSI_NOCOLOR}\n"
+              if [[ "${{ runner.os }}" != "macOS" ]]; then
+                tree -pashC -I .git .
+              else
+                ls -lAh
+              fi
+              printf "::endgroup::\n"
+            )
+          done
         else
-          artifactDirectories=(./)
-        fi
-
-        for artifactDirectory in "${artifactDirectories[@]}"; do
-          pushd "${artifactDirectory}" > /dev/null
-
-          printf "::group::${ANSI_LIGHT_BLUE}Artifact content of '${artifactDirectory}'${ANSI_NOCOLOR}\n"
+          printf "::group::${ANSI_LIGHT_BLUE}Artifact content of '${path}':${ANSI_NOCOLOR}\n"
           if [[ "${{ runner.os }}" != "macOS" ]]; then
-            tree -pashC -I .git .
+            tree -pashC -I .git "${path}"
           else
-            ls -lAh
+            ls -lAh "${path}"
           fi
           printf "::endgroup::\n"
-
-          popd > /dev/null
-        done
+        fi
 
     - name: Remove temporary tarball
       id: cleanup
