@@ -83,7 +83,7 @@ jobs:
             document1.txt
             *.log
             bin/
-            lib/*.py
+            lib/
 #          if-no-files-found: error
 #          retention-days: 1
 
@@ -114,11 +114,6 @@ jobs:
           name: ${{ matrix.uploader.name }}-release-1
           investigate: true
 
-      - name: 🔎 Inspect extracted artifact (tarball)
-        if: matrix.os.name != 'macOS'
-        run: |
-          tree -pash .
-
       - name: 🔎 Inspect cleanup
         uses: ./.github/actions/check-cleanup
         with:
@@ -135,6 +130,12 @@ jobs:
             bin/tool.py
             lib/common.py
             lib/shared.py
+          unexpected-files: |
+            .config
+            bin/.settings
+            lib/.library
+            lib/gui/main.py
+            lib/gui/dialog.py
 
       - name: 📋 Verify file permissions
         uses: ./.github/actions/file-is-executable
@@ -172,11 +173,7 @@ jobs:
         with:
           name: ${{ matrix.uploader.name }}-release-2
           path: myDownload
-
-      - name: 🔎 Inspect extracted artifact (tarball)
-        if: matrix.os.name != 'macOS'
-        run: |
-          tree -pash .
+          investigate: true
 
       - name: 🔎 Inspect cleanup
         uses: ./.github/actions/check-cleanup
@@ -194,6 +191,12 @@ jobs:
             myDownload/bin/tool.py
             myDownload/lib/common.py
             myDownload/lib/shared.py
+            myDownload/lib/gui/main.py
+            myDownload/lib/gui/dialog.py
+          unexpected-files: |
+            myDownload/.config
+            myDownload/bin/.settings
+            myDownload/lib/.library
 
       - name: 📋 Verify file permissions
         uses: ./.github/actions/file-is-executable
@@ -262,6 +265,17 @@ jobs:
             myDownload/${{ matrix.uploader.name }}-release-2/bin/tool.py
             myDownload/${{ matrix.uploader.name }}-release-2/lib/common.py
             myDownload/${{ matrix.uploader.name }}-release-2/lib/shared.py
+          unexpected-files: |
+            myDownload/${{ matrix.uploader.name }}-release-1/.config
+            myDownload/${{ matrix.uploader.name }}-release-1/bin/.settings
+            myDownload/${{ matrix.uploader.name }}-release-1/lib/.library
+            myDownload/${{ matrix.uploader.name }}-release-1/lib/gui/main.py
+            myDownload/${{ matrix.uploader.name }}-release-1/lib/gui/dialog.py
+            myDownload/${{ matrix.uploader.name }}-release-2/.config
+            myDownload/${{ matrix.uploader.name }}-release-2/bin/.settings
+            myDownload/${{ matrix.uploader.name }}-release-2/lib/.library
+            myDownload/${{ matrix.uploader.name }}-release-2/lib/gui/main.py
+            myDownload/${{ matrix.uploader.name }}-release-2/lib/gui/dialog.py
 
       - name: 📋 Verify file permissions
         uses: ./.github/actions/file-is-executable
@@ -304,11 +318,6 @@ jobs:
           name: ${{ matrix.uploader.name }}-legacy
           investigate: true
 
-      - name: 🔎 Inspect artifact content
-        if: matrix.os.name != 'macOS'
-        run: |
-          tree -pash .
-
       - name: 📋 Verify extracted artifact content
         uses: ./.github/actions/check-directory-content
         with:
@@ -320,3 +329,9 @@ jobs:
             bin/tool.py
             lib/common.py
             lib/shared.py
+          unexpected-files: |
+            .config
+            bin/.settings
+            lib/.library
+            lib/gui/main.py
+            lib/gui/dialog.py
