@@ -70,18 +70,22 @@ inputs:
     required: false
     default: ${{ github.run_id }}
   tarball-name:
+    description: |
+      Filename of the embedded tarball.
     type: string
     required: false
     default: '__pyTooling_upload_artifact__.tar'
   investigate:
-    description: "Print downloaded artifact's content."
+    description: |
+      Print downloaded artifact's content.
     type: boolean
     required: false
     default: false
 
 outputs:
   download-path:
-    description: Absolute path where the artifact(s) were downloaded.
+    description: |
+      Absolute path where the artifact(s) were downloaded.
     value: ${{ steps.download.outputs.download-path }}
 
 runs:
@@ -148,7 +152,7 @@ runs:
         done
 
     - name: Investigate downloaded content
-      if: ${{ inputs.investigate == 'true' }}
+      if: inputs.investigate == 'true'
       shell: bash
       run: |
         # Investigate downloaded content

@@ -239,12 +239,12 @@ jobs:
         run: |
           tree -pash .
 
-      - name: 🔎 Inspect cleanup
+      - name: 🔎 Inspect cleanup of '${{ matrix.uploader.name }}-release-1'
         uses: ./.github/actions/check-cleanup
         with:
           directory: myDownload/${{ matrix.uploader.name }}-release-1
 
-      - name: 🔎 Inspect cleanup
+      - name: 🔎 Inspect cleanup of '${{ matrix.uploader.name }}-release-2'
         uses: ./.github/actions/check-cleanup
         with:
           directory: myDownload/${{ matrix.uploader.name }}-release-2
