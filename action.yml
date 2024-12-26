@@ -177,12 +177,13 @@ runs:
         for artifactDirectory in "${artifactDirectories[@]}"; do
           pushd "${artifactDirectory}" > /dev/null
 
+          printf "::group::${ANSI_LIGHT_BLUE}Artifact content of '${artifactDirectory}'${ANSI_NOCOLOR}\n"
           if [[ "${{ runner.os }}" != "macOS" ]]; then
             tree -pashC -I .git .
           else
             ls -lAh
           fi
-          printf "%s\n" "--------------------------------------------------------------------------------"
+          printf "::endgroup::\n"
 
           popd > /dev/null
         done
