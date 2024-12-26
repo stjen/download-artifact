@@ -127,7 +127,7 @@ jobs:
       - name: 📋 Verify extracted artifact content
         uses: ./.github/actions/check-directory-content
         with:
-          files: |
+          expected-files: |
             document1.txt
             analysis.log
             build.log
@@ -186,7 +186,7 @@ jobs:
       - name: 📋 Verify extracted artifact content
         uses: ./.github/actions/check-directory-content
         with:
-          files: |
+          expected-files: |
             myDownload/document1.txt
             myDownload/analysis.log
             myDownload/build.log
@@ -252,7 +252,7 @@ jobs:
       - name: 📋 Verify extracted artifact content
         uses: ./.github/actions/check-directory-content
         with:
-          files: |
+          expected-files: |
             myDownload/${{ matrix.uploader.name }}-release-1/document1.txt
             myDownload/${{ matrix.uploader.name }}-release-1/analysis.log
             myDownload/${{ matrix.uploader.name }}-release-1/build.log
@@ -317,7 +317,7 @@ jobs:
       - name: 📋 Verify extracted artifact content
         uses: ./.github/actions/check-directory-content
         with:
-          files: |
+          expected-files: |
             document1.txt
             analysis.log
             build.log
