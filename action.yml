@@ -118,9 +118,11 @@ runs:
         # Extract tarball content(s)
         set +e
 
+        ANSI_CYAN=$'\x1b[36m'
         ANSI_LIGHT_RED=$'\x1b[91m'
         ANSI_LIGHT_GREEN=$'\x1b[92m'
         ANSI_LIGHT_YELLOW=$'\x1b[93m'
+        ANSI_LIGHT_BLUE="\e[94m"
         ANSI_NOCOLOR=$'\x1b[0m'
 
         if [[ "${{ inputs.name }}" == "" ]]; then
@@ -140,6 +142,7 @@ runs:
             tar -xf "${{ inputs.tarball-name }}"
             if [[ $? -ne 0 ]]; then
               printf "%s\n" "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
+              printf "::error title=%s::%s\n" "pyTooling/download-artifact" "Tarball '${artifactDirectory}${{ inputs.tarball-name }}' couldn't be extracted."
             else
               printf "%s\n" "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
             fi
@@ -157,6 +160,13 @@ runs:
       run: |
         # Investigate downloaded content
         set +e
+
+        ANSI_CYAN=$'\x1b[36m'
+        ANSI_LIGHT_RED=$'\x1b[91m'
+        ANSI_LIGHT_GREEN=$'\x1b[92m'
+        ANSI_LIGHT_YELLOW=$'\x1b[93m'
+        ANSI_LIGHT_BLUE="\e[94m"
+        ANSI_NOCOLOR=$'\x1b[0m'
 
         if [[ "${{ inputs.name }}" == "" ]]; then
           artifactDirectories=(*/)
@@ -185,8 +195,11 @@ runs:
         # Remove temporary tarball
         set +e
 
+        ANSI_CYAN=$'\x1b[36m'
         ANSI_LIGHT_RED=$'\x1b[91m'
         ANSI_LIGHT_GREEN=$'\x1b[92m'
+        ANSI_LIGHT_YELLOW=$'\x1b[93m'
+        ANSI_LIGHT_BLUE="\e[94m"
         ANSI_NOCOLOR=$'\x1b[0m'
 
         if [[ "${{ inputs.name }}" == "" ]]; then
@@ -200,6 +213,7 @@ runs:
           rm -f "${artifactDirectory}${{ inputs.tarball-name }}"
           if [[ $? -ne 0 ]]; then
             printf "%s\n" "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
+            printf "::error title=%s::%s\n" "pyTooling/download-artifact" "Temporary tarball '${artifactDirectory}${{ inputs.tarball-name }}' couldn't be removed."
           else
             printf "%s\n" "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
           fi
