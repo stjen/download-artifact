@@ -231,7 +231,7 @@ runs:
             (
               cd "${artifactDirectory}"
               printf "::group::${ANSI_LIGHT_BLUE}Artifact content of '${{ inputs.path }}/${artifactDirectory}'${ANSI_NOCOLOR}\n"
-              if [[ "${{ runner.os }}" == "ubuntu" ]]; then
+              if [[ "${{ runner.os }}" == "Linux" ]]; then
                 tree -pashC -I .git .
               else
                 ls -lAh
@@ -241,7 +241,7 @@ runs:
           done
         else
           printf "::group::${ANSI_LIGHT_BLUE}Artifact content of '${{ inputs.path }}':${ANSI_NOCOLOR}\n"
-          if [[ "${{ runner.os }}" == "ubuntu" ]]; then
+          if [[ "${{ runner.os }}" == "Linux" ]]; then
             tree -pashC -I .git .
           else
             ls -lAh .
