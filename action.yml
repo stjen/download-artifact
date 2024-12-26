@@ -120,25 +120,39 @@ runs:
         ANSI_LIGHT_BLUE="\e[94m"
         ANSI_NOCOLOR=$'\x1b[0m'
 
-        echo "Runner OS: ${{ runner.os }}"
-
         if [[ "${{ inputs.name }}" == "" ]]; then
           for artifactDirectory in $(echo */); do
             (
               cd "${artifactDirectory}"
 
-              printf "%s" "Checking tarball   '${{ inputs.path }}/${artifactDirectory}${{ inputs.tarball-name }}' ... "
+              printf "%s" "Checking temporary tarball   '${{ inputs.path }}/${artifactDirectory}${{ inputs.tarball-name }}' ... "
               if [[ -f "${{ inputs.tarball-name }}" ]]; then
                 printf "%s\n" "${ANSI_LIGHT_GREEN}[FOUND]${ANSI_NOCOLOR}"
 
-                printf "%s" "Extracting tarball '${{ inputs.path }}/${artifactDirectory}${{ inputs.tarball-name }}' ... "
+                printf "%s" "Extracting temporary tarball '${{ inputs.path }}/${artifactDirectory}${{ inputs.tarball-name }}' ... "
                 tar -xf "${{ inputs.tarball-name }}"
                 if [[ $? -ne 0 ]]; then
                   printf "%s\n" "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
-                  printf "::error title=%s::%s\n" "pyTooling/download-artifact" "Tarball '${{ inputs.path }}/${artifactDirectory}${{ inputs.tarball-name }}' couldn't be extracted."
+                  printf "::error title=%s::%s\n" "pyTooling/download-artifact" "Temporary tarball '${{ inputs.path }}/${artifactDirectory}${{ inputs.tarball-name }}' couldn't be extracted."
                 else
                   printf "%s\n" "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
-                  printf "Directoried: %s    Files: %s\n" "$(find . -type d | wc -l)" "$(find . -type f | wc -l)"
+                  printf "%s" "Removing temporary tarball   '${{ inputs.path }}/${artifactDirectory}${{ inputs.tarball-name }}' ... "
+                  rm -f "${{ inputs.tarball-name }}"
+                  if [[ $? -ne 0 ]]; then
+                    printf "%s\n" "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
+                    printf "::error title=%s::%s\n" "pyTooling/download-artifact" "Temporary tarball '${{ inputs.path }}/${artifactDirectory}${{ inputs.tarball-name }}' couldn't be removed."
+                  else
+                    printf "%s\n" "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
+                  fi
+
+                  printf "Directoried: %-4s  Files: %s\n" "$(($(find . -mindepth 0 -type d | wc -l) - 1))" "$(($(find . -mindepth 0 -type f | wc -l) - 1))"
+                  printf "::group::${ANSI_LIGHT_BLUE}Artifact content of '${{ inputs.path }}/${artifactDirectory}'${ANSI_NOCOLOR}\n"
+                  if [[ "${{ runner.os }}" == "Linux" ]]; then
+                    tree -pashC -I .git .
+                  else
+                    ls -lAh
+                  fi
+                  printf "::endgroup::\n"
                 fi
               else
                 printf "%s\n" "${ANSI_LIGHT_YELLOW}[MISSING]${ANSI_NOCOLOR}"
@@ -147,89 +161,27 @@ runs:
             )
           done
         else
-          printf "%s" "Checking tarball   '${{ inputs.path }}/${artifactDirectory}${{ inputs.tarball-name }}' ... "
+          printf "%s" "Checking temporary tarball   '${{ inputs.path }}/${artifactDirectory}${{ inputs.tarball-name }}' ... "
           if [[ -f "${{ inputs.tarball-name }}" ]]; then
             printf "%s\n" "${ANSI_LIGHT_GREEN}[FOUND]${ANSI_NOCOLOR}"
 
-            printf "%s" "Extracting tarball '${{ inputs.path }}/${artifactDirectory}${{ inputs.tarball-name }}' ... "
+            printf "%s" "Extracting temporary tarball '${{ inputs.path }}/${artifactDirectory}${{ inputs.tarball-name }}' ... "
             tar -xf "${{ inputs.tarball-name }}"
             if [[ $? -ne 0 ]]; then
               printf "%s\n" "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
-              printf "::error title=%s::%s\n" "pyTooling/download-artifact" "Tarball '${{ inputs.path }}/${artifactDirectory}${{ inputs.tarball-name }}' couldn't be extracted."
+              printf "::error title=%s::%s\n" "pyTooling/download-artifact" "Temporary tarball '${{ inputs.path }}/${artifactDirectory}${{ inputs.tarball-name }}' couldn't be extracted."
             else
               printf "%s\n" "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
-              printf "Directoried: %s    Files: %s\n" "$(find . -type d | wc -l)" "$(find . -type f | wc -l)"
-            fi
-          else
-            printf "%s\n" "${ANSI_LIGHT_YELLOW}[MISSING]${ANSI_NOCOLOR}"
-            printf "%s\n" "  ${ANSI_LIGHT_YELLOW}→ assuming artifact was uploaded by actions/upload-artifact${ANSI_NOCOLOR}"
-          fi
-        fi
-
-    - name: Remove temporary tarball
-      id: cleanup
-      shell: bash
-      working-directory: ${{ inputs.path }}
-      run: |
-        # Remove temporary tarball
-        set +e
-
-        ANSI_CYAN=$'\x1b[36m'
-        ANSI_LIGHT_RED=$'\x1b[91m'
-        ANSI_LIGHT_GREEN=$'\x1b[92m'
-        ANSI_LIGHT_YELLOW=$'\x1b[93m'
-        ANSI_LIGHT_BLUE="\e[94m"
-        ANSI_NOCOLOR=$'\x1b[0m'
-
-        if [[ "${{ inputs.name }}" == "" ]]; then
-          for artifactDirectory in $(echo */); do
-            printf "%s" "Removing temporary tarball '${{ inputs.path }}/${artifactDirectory}${{ inputs.tarball-name }}' ... "
-            if [[ -f "${artifactDirectory}${{ inputs.tarball-name }}" ]]; then
-              rm -f "${artifactDirectory}${{ inputs.tarball-name }}"
+              printf "%s" "Removing temporary tarball   '${{ inputs.path }}/${artifactDirectory}${{ inputs.tarball-name }}' ... "
+              rm -f "${{ inputs.tarball-name }}"
               if [[ $? -ne 0 ]]; then
                 printf "%s\n" "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
                 printf "::error title=%s::%s\n" "pyTooling/download-artifact" "Temporary tarball '${{ inputs.path }}/${artifactDirectory}${{ inputs.tarball-name }}' couldn't be removed."
               else
                 printf "%s\n" "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
               fi
-            else
-              printf "%s\n" "${ANSI_LIGHT_YELLOW}[SKIPPED]${ANSI_NOCOLOR}"
-            fi
-          done
-        else
-          printf "%s" "Removing temporary tarball '${{ inputs.path }}/${artifactDirectory}${{ inputs.tarball-name }}' ... "
-          if [[ -f "${artifactDirectory}${{ inputs.tarball-name }}" ]]; then
-            rm -f "${artifactDirectory}${{ inputs.tarball-name }}"
-            if [[ $? -ne 0 ]]; then
-              printf "%s\n" "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
-              printf "::error title=%s::%s\n" "pyTooling/download-artifact" "Temporary tarball '${{ inputs.path }}/${artifactDirectory}${{ inputs.tarball-name }}' couldn't be removed."
-            else
-              printf "%s\n" "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
-            fi
-          else
-            printf "%s\n" "${ANSI_LIGHT_YELLOW}[SKIPPED]${ANSI_NOCOLOR}"
-          fi
-        fi
 
-    - name: Investigate downloaded content
-      if: inputs.investigate == 'true'
-      shell: bash
-      working-directory: ${{ inputs.path }}
-      run: |
-        # Investigate downloaded content
-        set +e
-
-        ANSI_CYAN=$'\x1b[36m'
-        ANSI_LIGHT_RED=$'\x1b[91m'
-        ANSI_LIGHT_GREEN=$'\x1b[92m'
-        ANSI_LIGHT_YELLOW=$'\x1b[93m'
-        ANSI_LIGHT_BLUE="\e[94m"
-        ANSI_NOCOLOR=$'\x1b[0m'
-
-        if [[ "${{ inputs.name }}" == "" ]]; then
-          for artifactDirectory in $(echo */); do
-            (
-              cd "${artifactDirectory}"
+              printf "Directoried: %-4s  Files: %s\n" "$(($(find . -mindepth 0 -type d | wc -l) - 1))" "$(($(find . -mindepth 0 -type f | wc -l) - 1))"
               printf "::group::${ANSI_LIGHT_BLUE}Artifact content of '${{ inputs.path }}/${artifactDirectory}'${ANSI_NOCOLOR}\n"
               if [[ "${{ runner.os }}" == "Linux" ]]; then
                 tree -pashC -I .git .
@@ -237,14 +189,9 @@ runs:
                 ls -lAh
               fi
               printf "::endgroup::\n"
-            )
-          done
-        else
-          printf "::group::${ANSI_LIGHT_BLUE}Artifact content of '${{ inputs.path }}':${ANSI_NOCOLOR}\n"
-          if [[ "${{ runner.os }}" == "Linux" ]]; then
-            tree -pashC -I .git .
+            fi
           else
-            ls -lAh .
+            printf "%s\n" "${ANSI_LIGHT_YELLOW}[MISSING]${ANSI_NOCOLOR}"
+            printf "%s\n" "  ${ANSI_LIGHT_YELLOW}→ assuming artifact was uploaded by actions/upload-artifact${ANSI_NOCOLOR}"
           fi
-          printf "::endgroup::\n"
         fi
