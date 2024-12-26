@@ -274,8 +274,6 @@ jobs:
             myDownload/${{ matrix.uploader.name }}-release-2/.config
             myDownload/${{ matrix.uploader.name }}-release-2/bin/.settings
             myDownload/${{ matrix.uploader.name }}-release-2/lib/.library
-            myDownload/${{ matrix.uploader.name }}-release-2/lib/gui/main.py
-            myDownload/${{ matrix.uploader.name }}-release-2/lib/gui/dialog.py
 
       - name: 📋 Verify file permissions
         uses: ./.github/actions/file-is-executable
