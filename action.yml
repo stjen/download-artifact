@@ -14,7 +14,7 @@
 # WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
 # COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-name: Download Artifact(s) (Preserve File Permissions)
+name: 📥 Download Artifact(s) (Preserve File Permissions)
 branding:
   icon: download
   color: yellow
@@ -93,9 +93,9 @@ runs:
   using: composite
   steps:
     # https://github.com/actions/download-artifact
-    - name: Download artifact
-      id: download
+    - name: 📥 Download artifact
       uses: actions/download-artifact@v4
+      id: download
       with:
         name: ${{ inputs.name }}
         path: ${{ inputs.path }}
@@ -156,7 +156,7 @@ runs:
                 fi
               else
                 printf "%s\n" "${ANSI_LIGHT_YELLOW}[MISSING]${ANSI_NOCOLOR}"
-                printf "%s\n" "  ${ANSI_LIGHT_YELLOW}→ assuming artifact was uploaded by actions/upload-artifact${ANSI_NOCOLOR}"
+                printf "  %s\n" "${ANSI_LIGHT_YELLOW}→ assuming artifact was uploaded by actions/upload-artifact${ANSI_NOCOLOR}"
               fi
             )
           done
@@ -192,6 +192,6 @@ runs:
             fi
           else
             printf "%s\n" "${ANSI_LIGHT_YELLOW}[MISSING]${ANSI_NOCOLOR}"
-            printf "%s\n" "  ${ANSI_LIGHT_YELLOW}→ assuming artifact was uploaded by actions/upload-artifact${ANSI_NOCOLOR}"
+            printf "  %s\n" "${ANSI_LIGHT_YELLOW}→ assuming artifact was uploaded by actions/upload-artifact${ANSI_NOCOLOR}"
           fi
         fi
