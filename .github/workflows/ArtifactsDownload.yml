@@ -79,6 +79,7 @@ jobs:
         uses: pyTooling/upload-artifact@dev
         with:
           name: ${{ matrix.os.name }}-release-2
+          investigate: true
           path: |
             document1.txt
             *.log
