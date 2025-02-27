@@ -145,7 +145,7 @@ runs:
                     printf "%s\n" "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
                   fi
 
-                  printf "Directoried: %-4s  Files: %s\n" "$(($(find . -mindepth 0 -type d | wc -l) - 1))" "$(($(find . -mindepth 0 -type f | wc -l) - 1))"
+                  printf "Directories: %-4s  Files: %s\n" "$(($(find . -mindepth 0 -type d | wc -l) - 1))" "$(($(find . -mindepth 0 -type f | wc -l) - 1))"
                   if [[ "${{ inputs.investigate }}" == "true" ]]; then
                     printf "::group::${ANSI_LIGHT_BLUE}Artifact content of '${{ inputs.path }}/${artifactDirectory}'${ANSI_NOCOLOR}\n"
                     if [[ "${{ runner.os }}" == "Linux" ]]; then
@@ -183,7 +183,7 @@ runs:
                 printf "%s\n" "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
               fi
 
-              printf "Directoried: %-4s  Files: %s\n" "$(($(find . -mindepth 0 -type d | wc -l) - 1))" "$(($(find . -mindepth 0 -type f | wc -l) - 1))"
+              printf "Directories: %-4s  Files: %s\n" "$(($(find . -mindepth 0 -type d | wc -l) - 1))" "$(($(find . -mindepth 0 -type f | wc -l) - 1))"
               if [[ "${{ inputs.investigate }}" == "true" ]]; then
                 printf "::group::${ANSI_LIGHT_BLUE}Artifact content of '${{ inputs.path }}/${artifactDirectory}'${ANSI_NOCOLOR}\n"
                 if [[ "${{ runner.os }}" == "Linux" ]]; then
