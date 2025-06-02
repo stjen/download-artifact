@@ -22,6 +22,9 @@ description: Download the artifact(s) with preserved file privileges which were 
 author: Patrick Lehmann (@Paebbels)
 
 inputs:
+  artifact-ids:
+    description: 'IDs of the artifacts to download, comma-separated. Either inputs `artifact-ids` or `name` can be used, but not both.'
+    required: false
   name:
     description: |
       Name of the artifact to download.
@@ -104,7 +107,7 @@ runs:
         github-token: ${{ inputs.github-token }}
         repository: ${{ inputs.repository }}
         run-id: ${{ inputs.run-id }}
-
+        artifact-ids: ${{ inputs.artifact-ids }} 
     - name: Extract tarball content(s)
       id: extract
       shell: bash
