@@ -216,9 +216,9 @@ runs:
             if [[ "${{ inputs.investigate }}" == "true" ]]; then
               printf "::group::${ANSI_LIGHT_BLUE}Artifact content of '${{ inputs.path }}/${artifactDirectory}'${ANSI_NOCOLOR}\n"
               if [[ "${{ runner.os }}" == "Linux" ]]; then
-                tree -pashC -I .git .
+                ls -lR .
               else
-                ls -lAh
+                ls -R
               fi
               printf "::endgroup::\n"
             fi
